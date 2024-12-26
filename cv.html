@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="img/logo aut.png" rel="icon">
+    <title>Déposer et Afficher le CV</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: url('logo_aut_blurred (1).png') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 40px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            max-width: 500px;
+            width: 100%;
+            animation: fadeIn 1.5s ease;
+            position: relative;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container::before, .container::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 123, 255, 0.6);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: pulse 2s infinite;
+        }
+
+        .container::before {
+            top: -20px;
+            right: -20px;
+        }
+
+        .container::after {
+            bottom: -20px;
+            left: -20px;
+            background: #00abe4;
+            animation-delay: 1s;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        .custom-file {
+            position: relative;
+            width: 100%;
+            height: calc(1.5em + .75rem + 2px);
+            margin-bottom: 20px;
+        }
+
+        .custom-file-input {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: calc(1.5em + .75rem + 2px);
+            margin-bottom: 0;
+            padding: .375rem .75rem;
+            font-size: 1em;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        }
+
+        .custom-file-input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
+        }
+
+        .custom-file-label {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            z-index: 1;
+            height: calc(1.5em + .75rem + 2px);
+            padding: .375rem .75rem;
+            font-size: 1em;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        }
+
+        .custom-file-input:focus ~ .custom-file-label {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
+        }
+
+        .btn-lg {
+            padding: 12px 25px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            border: none;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0056b3 0%, #003f7f 100%);
+            transform: scale(1.05);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            border: none;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c82333 0%, #a71d2a 100%);
+            transform: scale(1.05);
+        }
+
+        #cvViewer {
+            margin-top: 20px;
+            width: 100%;
+            height: 500px;
+            display: none;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        #cvViewer.visible {
+            display: block;
+        }
+        footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: left;
+    padding: 10px;
+}
+
+.back-link {
+    text-decoration: none;
+    color: #000000;
+    font-weight: bold;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+    </style>
+</head>
+    <body style="background: url('img/logo_aut_blurred\ \(1\).png ') no-repeat center center fixed; background-size: cover;">
+
+    <div class="container">
+        <h1 class="mb-4">Déposer et Afficher le CV</h1>
+        <form id="uploadForm" action="cv.php" method="post" enctype="multipart/form-data">
+            <div class="custom-file">
+                <input type="file" name="cvFile" id="uploadCV" class="custom-file-input" accept="application/pdf">
+                <label class="custom-file-label" for="uploadCV">Choisir un fichier</label>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg">Télécharger le CV</button>
+        </form>
+        <button id="deleteButton" class="btn btn-danger btn-lg" style="display:none;">Supprimer le CV</button>
+        <iframe id="cvViewer"></iframe>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('cv.php?action=load')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.cvFile) {
+                        const viewer = document.getElementById('cvViewer');
+                        viewer.src = data.cvFile;
+                        viewer.classList.add('visible');
+                        document.getElementById('deleteButton').style.display = 'inline-block';
+                    }
+                });
+
+            document.getElementById('deleteButton').addEventListener('click', function() {
+                fetch('cv.php?action=delete', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const viewer = document.getElementById('cvViewer');
+                        viewer.src = '';
+                        viewer.classList.remove('visible');
+                        document.getElementById('uploadCV').value = '';
+                        document.getElementById('deleteButton').style.display = 'none';
+                    }
+                });
+            });
+
+            // Mise à jour de l'affichage du label lors de la sélection de fichier
+            document.getElementById('uploadCV').addEventListener('change', function(event) {
+                var inputFile = event.currentTarget;
+                var fileName = inputFile.files[0].name;
+                var label = inputFile.nextElementSibling;
+                label.innerText = fileName;
+            });
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/indexsec.js"></script>
+    <footer>
+        <a href="acceuilchercheur.html" class="back-link">&larr; Revenir à la page précédente</a>
+        </footer>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favicon -->
+    <link href="img/logo aut.png" rel="icon">
+    <title>Choix</title>
+    <style>
+        body {
+            background-image: url('img/travail2_less_blur.png'); /* Utilisez le chemin de votre image floutée */
+            background-size: cover;
+            background-attachment: fixed;
+            font-family: Arial, sans-serif;
+            color: #050a30;
+            text-align: center;
+            padding-top: 50px;
+            animation: fadeInBackground 3s ease-in-out;
+        }
+        h1 {
+            color: #00ABE4;
+            margin-bottom: 30px;
+            font-size: 3em;
+            animation: fadeInDown 1s ease-in-out;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px; /* Ajouter plus d'espace entre les boutons */
+            animation: fadeIn 1.5s ease-in-out;
+            margin-top: 50px;
+        }
+        button {
+            background-color: #00ABE4;
+            color: #fff;
+            padding: 0; /* Enlever le padding pour gérer la taille par flexbox */
+            border: none;
+            border-radius: 30px; /* Boutons arrondis */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre pour relief */
+            cursor: pointer;
+            font-size: 22px; /* Augmenter la taille de la police */
+            width: 280px; /* Augmenter la largeur */
+            height: 70px; /* Augmenter la hauteur */
+            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            animation: bounceIn 2s infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        button:hover {
+            background-color: #007aae;
+            transform: scale(1.1);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Augmentation de l'ombre au survol */
+        }
+        .logo {
+            max-width: 200px;
+            margin-bottom: 30px;
+            animation: fadeInDown 1s ease-in-out;
+        }
+        .special-element {
+            margin-top: 50px;
+            font-size: 1.5em;
+            color: #007aae;
+            animation: fadeIn 2s ease-in-out;
+        }
+        .cta {
+            background-color: #00ABE4;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 40px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1.5em;
+            transition: background-color 0.3s, transform 0.3s;
+            animation: fadeIn 2.5s ease-in-out;
+        }
+        .cta:hover {
+            background-color: #007aae;
+            transform: scale(1.1);
+        }
+        @keyframes fadeInDown {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        @keyframes fadeInBackground {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        @keyframes bounceIn {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <img src="img/logo aut.png" alt="Logo de votre entreprise" class="logo">
+    <h1>Choisissez une Option</h1>
+    <div class="button-container">
+        <button onclick="redirectTo('entreprise')">Entreprise</button>
+        <button onclick="redirectTo('chercheur')">Chercheur d'emploi</button>
+    </div>
+
+    <div class="special-element">
+        <p>Découvrez nos services et rejoignez notre communauté !</p>
+    </div>
+
+    <script>
+        function redirectTo(type) {
+            if (type === 'entreprise') {
+                window.location.href = "connexionentreprise.php";
+            } else if (type === 'chercheur') {
+                window.location.href = "coonexionchercheur.php";
+            }
+        }
+    </script>
+</body>
+</html>
