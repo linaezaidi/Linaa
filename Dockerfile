@@ -17,7 +17,8 @@ WORKDIR /app
 COPY . .
 
 # Installer les dépendances avec Composer
-RUN composer install --no-dev --optimize-autoloader
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
 
 # Étape 2 : Image finale (nommée final)
 FROM php:8.1-fpm AS final
