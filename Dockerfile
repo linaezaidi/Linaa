@@ -1,7 +1,7 @@
-# Étape 1 : Builder (nommée "builder")
+# Étape 1 : Build (nommée builder)
 FROM php:8.1-cli AS builder
 
-# Installer Composer et les dépendances nécessaires
+# Installer les dépendances nécessaires
 RUN apt-get update && apt-get install -y \
     unzip \
     git \
@@ -13,19 +13,19 @@ RUN apt-get update && apt-get install -y \
 # Définir le répertoire de travail
 WORKDIR /app
 
-# Copier les fichiers de votre projet dans l'image
+# Copier le code source dans le conteneur
 COPY . .
 
 # Installer les dépendances avec Composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Étape 2 : Final (nommée "final")
+# Étape 2 : Final (image finale)
 FROM php:8.1-fpm AS final
 
 # Définir le répertoire de travail
 WORKDIR /var/www/html
 
-# Copier les fichiers construits depuis l'étape "builder"
+# Copier les fichiers de l'étape "builder" vers l'image finale
 COPY --from=builder /app /var/www/html
 
 # Exposer le port 9000 pour PHP-FPM
