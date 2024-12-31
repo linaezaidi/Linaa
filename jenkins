@@ -1,19 +1,24 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKER_IMAGE = 'linaa21/projet-jenkins'
+        DOCKER_TAG = 'latest'
+    }
+
     stages {
         stage('Checkout') {
             steps {
                 // Cloner le dépôt GitHub
-                git branch: 'main', url: 'https://github.com/yousrahousni/jenkins-projet.git'
+                git branch: 'main', url: 'https://github.com/linaezaidi/Projet-PFA-Jenkins-Pipeline.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    
-                    docker.build('yousrahousni/jenkins-projet:latest')
+                    // Construire l'image Docker
+                    docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
                 }
             }
         }
@@ -21,12 +26,12 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    //ss
+                    // Pousser l'image Docker vers Docker Hub
                     docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-cred') {
-                        docker.image('yousrahousni/jenkins-projet:latest').push('latest')
+                        docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
                     }
                 }
             }
-        }
-    }
+        }
+    }
 }
