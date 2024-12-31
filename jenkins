@@ -2,45 +2,51 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+        stage('Installation des dépendances') {
             steps {
-                echo 'Building the application...'
-                sh 'dotnet build'
+                echo 'Installation des dépendances PHP avec Composer...'
+                sh 'composer install'
             }
         }
         stage('Tests Unitaires') {
             steps {
-                echo 'Running unit tests...'
-                sh 'dotnet test'
+                echo 'Exécution des tests unitaires avec PHPUnit...'
+                sh './vendor/bin/phpunit --configuration phpunit.xml'
             }
         }
         stage('Analyse SonarQube') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh 'dotnet sonarscanner begin /k:"MyProjectKey" /d:sonar.host.url="http://<sonar_url>" /d:sonar.login="<token>"'
-                    sh 'dotnet build'
-                    sh 'dotnet sonarscanner end /d:sonar.login="<token>"'
+                    echo 'Analyse SonarQube...'
+                    sh '''
+                        sonar-scanner \
+                            -Dsonar.projectKey="MyPHPProject" \
+                            -Dsonar.sources=. \
+                            -Dsonar.host.url="http://<sonar_url>" \
+                            -Dsonar.login="<token>"
+                    '''
                 }
             }
         }
         stage('Créer Image Docker') {
             steps {
-                echo 'Building Docker image...'
-                sh 'docker build -t myproject:latest .'
+                echo 'Création de l\'image Docker...'
+                sh 'docker build -t myphpapp:latest .'
             }
         }
         stage('Push vers DockerHub') {
             steps {
                 withCredentials([string(credentialsId: 'dockerhub-token', variable: 'DOCKERHUB_TOKEN')]) {
+                    echo 'Connexion à DockerHub et push de l\'image...'
                     sh 'echo $DOCKERHUB_TOKEN | docker login --username mydockerhubuser --password-stdin'
-                    sh 'docker tag myproject:latest mydockerhubuser/myproject:latest'
-                    sh 'docker push mydockerhubuser/myproject:latest'
+                    sh 'docker tag myphpapp:latest mydockerhubuser/myphpapp:latest'
+                    sh 'docker push mydockerhubuser/myphpapp:latest'
                 }
             }
         }
         stage('Déploiement sur Serveur Distant') {
             steps {
-                echo 'Deploying to remote server...'
+                echo 'Déploiement sur le serveur distant...'
                 sh 'scp docker-compose.yml user@remote-server:/path/to/deploy'
                 sh 'ssh user@remote-server "docker-compose up -d"'
             }
