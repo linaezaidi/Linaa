@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'linaa21/projet-jenkins'
         DOCKER_TAG = 'latest'
+        DOCKER_USER = 'linaa21'
     }
 
     stages {
@@ -17,18 +18,21 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Construire l'image Docker
-                    docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                    // Construire l'image Docker via une commande shell
+                    sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
                 }
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                script {
-                    // Pousser l'image Docker vers Docker Hub
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-cred') {
-                        docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").push()
+                withCredentials([string(credentialsId: 'docker-token', variable: 'DOCKER_TOKEN')]) {
+                    script {
+                        // Login and push the image
+                        sh """
+                            echo ${DOCKER_TOKEN} | docker login -u ${DOCKER_USER} --password-stdin
+                            docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
+                        """
                     }
                 }
             }
