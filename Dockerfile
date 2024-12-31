@@ -1,55 +1,23 @@
-# Use an official PHP runtime as a parent image
-FROM php:8.3-fpm
+# Utiliser une image de base PHP
+FROM php:8.1-fpm
 
-# Install system dependencies
+# Installer les dépendances nécessaires (ici, Composer et libzip)
 RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    libicu-dev \
-    libzip-dev \
-    zlib1g-dev \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libonig-dev \
-    curl \
-    && docker-php-ext-configure intl \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install intl pdo pdo_mysql zip exif gd
+    libzip-dev unzip git && \
+    docker-php-ext-install zip && \
+    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+    php composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
+    php -r "unlink('composer-setup.php');"
 
-# Install Node.js and npm
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs
-
-# Verify Node.js and npm installation
-RUN node -v
-RUN npm -v
-
-# Install Composer
-COPY --from=composer:2.6.5 /usr/bin/composer /usr/local/bin/composer
-
-# Verify Composer installation
-RUN composer --version
-
-# Install Symfony CLI
-RUN curl -sS https://get.symfony.com/cli/installer | bash
-RUN mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
-
-# Set working directory
+# Copier le code source de votre projet
 WORKDIR /var/www/html
+COPY . .
 
-# Copy existing application directory contents
-COPY . /var/www/html
+# Installer les dépendances via Composer
+RUN composer install --no-dev --optimize-autoloader
 
-# Debugging steps
-RUN which composer
-RUN composer --version
-RUN ls -l /usr/local/bin
-RUN ls -l /var/www/html
-
-# Install project dependencies
-RUN composer install
-
-# Expose port 9000 and start php-fpm server
+# Exposer le port utilisé par PHP-FPM
 EXPOSE 9000
+
+# Démarrer PHP-FPM
 CMD ["php-fpm"]
