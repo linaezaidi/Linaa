@@ -8,6 +8,6 @@ services:
     image: linaezaidi/projet-pfa
     build: .
     ports:
-      - "8080:80"
+      - "8083:80"
     depends_on:
       - db
