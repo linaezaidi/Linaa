@@ -2,63 +2,31 @@ pipeline {
     agent any
 
     stages {
-        stage('Installation des dépendances') {
+        stage('Checkout') {
             steps {
-                echo 'Installation des dépendances PHP avec Composer...'
-                sh 'composer install'
+                // Cloner le dépôt GitHub
+                git branch: 'main', url: 'https://github.com/yousrahousni/jenkins-projet.git'
             }
         }
-        stage('Tests Unitaires') {
-            steps {
-                echo 'Exécution des tests unitaires avec PHPUnit...'
-                sh './vendor/bin/phpunit --configuration phpunit.xml'
-            }
-        }
-        stage('Analyse SonarQube') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    echo 'Analyse SonarQube...'
-                    sh '''
-                        sonar-scanner \
-                            -Dsonar.projectKey="MyPHPProject" \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url="http://<sonar_url>" \
-                            -Dsonar.login="<token>"
-                    '''
-                }
-            }
-        }
-        stage('Créer Image Docker') {
-            steps {
-                echo 'Création de l\'image Docker...'
-                sh 'docker build -t myphpapp:latest .'
-            }
-        }
-        stage('Push vers DockerHub') {
-            steps {
-                withCredentials([string(credentialsId: 'dockerhub-token', variable: 'DOCKERHUB_TOKEN')]) {
-                    echo 'Connexion à DockerHub et push de l\'image...'
-                    sh 'echo $DOCKERHUB_TOKEN | docker login --username mydockerhubuser --password-stdin'
-                    sh 'docker tag myphpapp:latest mydockerhubuser/myphpapp:latest'
-                    sh 'docker push mydockerhubuser/myphpapp:latest'
-                }
-            }
-        }
-        stage('Déploiement sur Serveur Distant') {
-            steps {
-                echo 'Déploiement sur le serveur distant...'
-                sh 'scp docker-compose.yml user@remote-server:/path/to/deploy'
-                sh 'ssh user@remote-server "docker-compose up -d"'
-            }
-        }
-    }
 
-    post {
-        success {
-            echo 'Pipeline terminé avec succès.'
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    
+                    docker.build('yousrahousni/jenkins-projet:latest')
+                }
+            }
         }
-        failure {
-            echo 'Pipeline échoué.'
-        }
-    }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    //ss
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-cred') {
+                        docker.image('yousrahousni/jenkins-projet:latest').push('latest')
+                    }
+                }
+            }
+        }
+    }
 }
